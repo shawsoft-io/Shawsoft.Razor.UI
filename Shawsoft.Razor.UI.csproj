@@ -10,7 +10,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Shawsoft.Razor.UI</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>Connor Shaw</Authors>
     <Description>A Razor Class Library for building modular UI components</Description>
     <PackageTags>Razor UI Components</PackageTags>
@@ -27,8 +27,9 @@
   
   <ItemGroup>
     <Content Include="**/*.razor" />
+    <Content Include="wwwroot/**" Pack="true" />
+    <Content Include="Models/*" />
   </ItemGroup>
-  
  
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -37,14 +38,5 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Models\*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\**" Pack="true" />
-  </ItemGroup>
-
 
 </Project>

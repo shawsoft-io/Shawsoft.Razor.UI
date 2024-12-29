@@ -21,17 +21,11 @@
     [Parameter, EditorRequired]
     public AlertType Type { get; set; }
 
-
     [Parameter, EditorRequired]
     public string Title { get; set; } = string.Empty;
 
-
-    [Parameter, EditorRequired]
-    public string Message { get; set; } = string.Empty;
-
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
 
     private string BackgroundColor => Type switch
     {
