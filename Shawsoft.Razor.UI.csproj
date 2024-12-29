@@ -8,6 +8,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Shawsoft.Razor.UI</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Connor Shaw</Authors>
+    <Description>A Razor Class Library for building modular UI components</Description>
+    <PackageTags>Razor UI Components</PackageTags>
+    <RepositoryUrl>https://github.com/your-repo/Shawsoft.Razor.UI</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -27,22 +34,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" />
   </ItemGroup>
 
-  
-
   <ItemGroup>
     <Content Include="Models\*" />
   </ItemGroup>
 
-
   <ItemGroup>
     <Content Include="wwwroot\**" Pack="true" />
   </ItemGroup>
-
-
-  <ItemGroup>
-    <None Remove="Components\UIValidationSummary.razor" />
-  </ItemGroup>
-
 
 
 </Project>
