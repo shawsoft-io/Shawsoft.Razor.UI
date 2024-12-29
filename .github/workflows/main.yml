@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -17,10 +17,11 @@ jobs:
       with:
         dotnet-version: '8.0'
 
-    - name: Build and Pack
-      run: dotnet pack -c Release
+    - name: Restore dependencies
+      run: dotnet restore
 
-    - name: Publish to NuGet
-      env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      run: dotnet nuget push ./bin/Release/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+    - name: Publish project
+      run: dotnet publish -c Release --output publish
+
+    - name: Pack NuGet package
+      run: dotnet pack -c Release
