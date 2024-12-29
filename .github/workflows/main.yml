@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -15,9 +15,15 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0'
+        dotnet-version: '8.0'
 
-    - name: Build and Pack
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Publish project
+      run: dotnet publish -c Release --output publish
+
+    - name: Pack NuGet package
       run: dotnet pack -c Release
 
     - name: Publish to NuGet
