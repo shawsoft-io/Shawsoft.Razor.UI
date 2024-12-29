@@ -37,3 +37,12 @@ Shawsoft Razor UI is a modern web application built with Razor Pages and Tailwin
    ```bash
    git clone https://github.com/your-username/Shawsoft.Razor.UI.git
    cd Shawsoft.Razor.UI
+
+2. **Install .NET dependencies:**
+   ```bash
+   dotnet restore
+
+3. **Install Node.js dependencies:**
+   ```bash
+   npm install
+
