@@ -17,17 +17,22 @@
     <RepositoryUrl>https://github.com/shawsoft-io/Shawsoft.Razor.UI</RepositoryUrl>
     <EnableDefaultItems>true</EnableDefaultItems>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
     <None Include="LICENSE" Pack="true" PackagePath="" />
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
-  
+
+
   <ItemGroup>
     <Content Include="**/*.razor" />
+    <Content Include="**/*.cs" />
     <Content Include="wwwroot/**" Pack="true" />
-    <Content Include="Models/*" />
   </ItemGroup>
  
   <ItemGroup>
