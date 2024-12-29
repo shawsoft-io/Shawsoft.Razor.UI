@@ -16,7 +16,6 @@
     <PackageTags>Razor UI Components</PackageTags>
     <RepositoryUrl>https://github.com/shawsoft-io/Shawsoft.Razor.UI</RepositoryUrl>
     <EnableDefaultItems>true</EnableDefaultItems>
-    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
   </PropertyGroup>
 
