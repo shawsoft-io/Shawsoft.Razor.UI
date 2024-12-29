@@ -1,0 +1,138 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<div class="col-span-full">
+    <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+        <div class="text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
+            </svg>
+
+            <div class="mt-4 flex text-sm leading-6 text-gray-600">
+                <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-gray-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-gray-600 focus-within:ring-offset-2 hover:text-gray-500">
+                    <span>Upload a file</span>
+                    <InputFile id="file-upload" OnChange="HandleFileUploadAsync" multiple=@AllowMultipleFiles class="sr-only" />
+                </label>
+                <p class="pl-1">or drag and drop</p>
+            </div>
+            <p class="text-xs leading-5 text-gray-600">
+                @string.Join(", ", AllowedFileTypes.Select(s => s.ToString())).ToLower() up to 10MB
+            </p>
+        </div>
+    </div>
+
+    @if (UploadErrors.Count > 0)
+    {
+        <div class="mt-2 text-sm text-red-600">
+            <ul role="list" class="list-disc space-y-1 pl-5">
+                @foreach (var error in UploadErrors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+</div>
+
+
+@if (Files.Count > 0)
+{
+    <ul role="list" class="divide-y mt-5 divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+        @foreach (var file in Files)
+        {
+            <li class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
+                <div class="flex min-w-0 gap-x-4">
+                    <img class="h-12 w-12 flex-none" src=@($"_content/Shawsoft.Razor.UI/img/icon-file-{FileTypeMappings.GetFileType(file.ContentType)}.png") alt="File icon">
+                    <div class="min-w-0 flex-auto">
+                        <p class="text-sm font-semibold leading-6 text-gray-900">
+                            <span>@file.Name</span>
+                        </p>
+                        <p class="mt-1 flex text-xs leading-5 text-gray-500">
+                            <span>@file.ContentType</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex shrink-0 items-center gap-x-4">
+                    <p class="mt-1 text-xs leading-5 text-gray-500">@FileHelpers.FormatFileSize(file.Size)</p>
+                    <button class="text-gray-500 hover:text-gray-700" @onclick="() => RemoveFile(file)">
+                        Remove
+                    </button>
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+
+
+@code {
+
+    [Parameter, EditorRequired]
+    public List<IBrowserFile> Files
+    {
+        get => _files;
+        set
+        {
+            if (_files != value)
+            {
+                _files = value ?? new List<IBrowserFile>();
+                FilesChanged.InvokeAsync(_files);
+            }
+        }
+    }
+
+    private List<IBrowserFile> _files = new();
+
+
+    [Parameter]
+    public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
+
+
+    [Parameter]
+    public FileTypes[] AllowedFileTypes { get; set; } = { FileTypes.Pdf, FileTypes.Image };
+
+
+    [Parameter]
+    public bool AllowMultipleFiles { get; set; } = true;
+
+
+    private const long MaxFileSize = 10 * 1024 * 1024;
+
+
+    private readonly List<string> UploadErrors = new();
+
+
+    private async Task HandleFileUploadAsync(InputFileChangeEventArgs args)
+    {
+        UploadErrors.Clear();
+        foreach (var file in args.GetMultipleFiles())
+        {
+            if (!IsFileTypeAllowed(file.ContentType))
+            {
+                UploadErrors.Add($"Unsupported file type: {file.Name} ({file.ContentType})");
+                continue;
+            }
+
+            if (file.Size > MaxFileSize)
+            {
+                UploadErrors.Add($"File too large: {file.Name} ({file.Size / 1024 / 1024} MB). Max size is 10 MB.");
+                continue;
+            }
+
+            _files.Add(file);
+        }
+
+        await FilesChanged.InvokeAsync(_files);
+    }
+
+
+    private bool IsFileTypeAllowed(string mimeType) => FileTypeMappings.IsSupportedMimeType(mimeType, AllowedFileTypes);
+
+
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        _files.Remove(file);
+        StateHasChanged();
+    }
+}

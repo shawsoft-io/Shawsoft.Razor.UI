@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <Target Name="BuildTailwindCSS" BeforeTargets="Build">
+    <Exec Command="npm run build:css" />
+  </Target>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="**/*.razor" />
+  </ItemGroup>
+  
+ 
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" />
+  </ItemGroup>
+
+  
+
+  <ItemGroup>
+    <Content Include="Models\*" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Include="wwwroot\**" Pack="true" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Remove="Components\UIValidationSummary.razor" />
+  </ItemGroup>
+
+
+
+</Project>

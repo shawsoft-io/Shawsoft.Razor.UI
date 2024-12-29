@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+@if (Error != default)
+{
+    <UIAlertBox 
+        Type="AlertType.Warning" 
+        Title="Application Error" 
+        Message="@(Error?.InnerException?.Message ?? Error?.Message)" />
+}
+
+
+
+@code {
+    [Parameter]
+    public Exception? Error { get; set; }
+}

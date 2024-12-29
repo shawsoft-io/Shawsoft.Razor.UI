@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+@if (EditContext != null && GetValidationMessages().Any())
+{
+    <UIAlertBox Type="AlertType.Error" Title="There is a problem with your submission">
+        <ul class="list-disc space-y-1 pl-5 validation-summary">
+            @foreach (var message in GetValidationMessages())
+            {
+                <li>@message</li>
+            }
+        </ul>
+    </UIAlertBox>
+}
+
+@code {
+    [Parameter]
+    public EditContext? EditContext { get; set; }
+
+    private IEnumerable<string> GetValidationMessages()
+    {
+        return EditContext?.GetValidationMessages() ?? Enumerable.Empty<string>();
+    }
+}

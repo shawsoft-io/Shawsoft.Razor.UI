@@ -1,0 +1,161 @@
+﻿@using System.Globalization
+
+<div class="relative">
+    
+    <input type="text"
+           @bind="FormattedDate"
+           @bind:event="oninput"
+           placeholder="Select a date"
+           readonly
+           class="border mt-1 rounded px-4 w-full bg-gray-50 focus:ring-2 focus:ring-gray-900"
+           @onclick="ToggleCalendar" />
+
+    @if (IsCalendarVisible)
+    {
+        <div class="absolute z-10 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
+            <div class="flex items-center justify-between px-4 py-2 bg-gray-100">
+                <button @onclick="PreviousMonth"
+                        type="button"
+                        class="p-1 text-gray-600 hover:text-blue-500"
+                        disabled="@(!CanNavigateToPreviousMonth())">
+                    &lt;
+                </button>
+                <span class="font-medium">
+                    @CurrentMonth.ToString("MMMM yyyy", CultureInfo.InvariantCulture)
+                </span>
+                <button @onclick="NextMonth"
+                        type="button"
+                        class="p-1 text-gray-600 hover:text-blue-500"
+                        disabled="@(!CanNavigateToNextMonth())">
+                    &gt;
+                </button>
+            </div>
+            <div class="grid grid-cols-7 gap-1 px-2 py-1 text-center">
+                @foreach (var day in DayHeaders)
+                {
+                    <div class="text-sm font-medium text-gray-500">
+                        @day
+                    </div>
+                }
+                @foreach (var date in DatesInView)
+                {
+                    <button @onclick="() => SelectDate(date)"
+                            type="button"
+                            class="@GetDateButtonClasses(date)"
+                            disabled="@(date < MinDate || date > MaxDate)">
+                        @date.Day
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public DateTime Value { get; set; } = DateTime.Today;
+
+    [Parameter]
+    public EventCallback<DateTime> ValueChanged { get; set; }
+
+    private bool IsCalendarVisible { get; set; }
+
+    private DateTime CurrentMonth { get; set; } = DateTime.Today;
+
+    private DateTime MinDate { get; set; } = new DateTime(2020, 1, 1);
+
+    private DateTime MaxDate { get; set; } = new DateTime(2030, 12, 31);
+
+    private string FormattedDate
+    {
+        get => Value.ToString("dd/MM/yyyy");
+        set
+        {
+            if (DateTime.TryParse(value, out var parsedDate) && parsedDate >= MinDate && parsedDate <= MaxDate)
+            {
+                Value = parsedDate;
+                CurrentMonth = parsedDate;
+                ValueChanged.InvokeAsync(parsedDate);
+            }
+        }
+    }
+
+    private List<DateTime> DatesInView => GetDatesInView(CurrentMonth);
+
+    private string[] DayHeaders => CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames;
+
+    private void ToggleCalendar()
+    {
+        IsCalendarVisible = !IsCalendarVisible;
+    }
+
+    private void PreviousMonth()
+    {
+        if (CanNavigateToPreviousMonth())
+        {
+            CurrentMonth = CurrentMonth.AddMonths(-1);
+        }
+    }
+
+    private void NextMonth()
+    {
+        if (CanNavigateToNextMonth())
+        {
+            CurrentMonth = CurrentMonth.AddMonths(1);
+        }
+    }
+
+    private async Task SelectDate(DateTime date)
+    {
+        if (date >= MinDate && date <= MaxDate)
+        {
+            Value = date;
+            IsCalendarVisible = false;
+            await ValueChanged.InvokeAsync(date);
+        }
+    }
+
+    private List<DateTime> GetDatesInView(DateTime month)
+    {
+        var firstDayOfMonth = new DateTime(month.Year, month.Month, 1);
+        return Enumerable.Range(0, 42)
+                         .Select(offset => firstDayOfMonth.AddDays(offset - (int)firstDayOfMonth.DayOfWeek))
+                         .ToList();
+    }
+
+    private string GetDateButtonClasses(DateTime date)
+    {
+        var baseClasses = "px-2 py-1 rounded";
+        if (date.Date == DateTime.Today)
+        {
+            baseClasses += " bg-blue-50 font-bold text-blue-600";
+        }
+        if (date.Date == Value.Date)
+        {
+            baseClasses += " bg-blue-500 text-blue-700";
+        }
+        else if (date.Month != CurrentMonth.Month)
+        {
+            baseClasses += " text-gray-400";
+        }
+        else if (date < MinDate || date > MaxDate)
+        {
+            baseClasses += " text-gray-300 cursor-not-allowed";
+        }
+        else
+        {
+            baseClasses += " hover:bg-blue-100";
+        }
+        return baseClasses;
+    }
+
+    private bool CanNavigateToPreviousMonth()
+    {
+        return CurrentMonth.AddMonths(-1).AddDays(1) >= MinDate;
+    }
+
+    private bool CanNavigateToNextMonth()
+    {
+        return CurrentMonth.AddMonths(1).AddDays(-1) <= MaxDate;
+    }
+}
