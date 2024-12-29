@@ -15,12 +15,16 @@
     <Description>A Razor Class Library for building modular UI components</Description>
     <PackageTags>Razor UI Components</PackageTags>
     <RepositoryUrl>https://github.com/your-repo/Shawsoft.Razor.UI</RepositoryUrl>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <EnableDefaultItems>true</EnableDefaultItems>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Content Include="**/*.razor" />
   </ItemGroup>
