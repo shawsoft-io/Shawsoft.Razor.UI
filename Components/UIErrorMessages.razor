@@ -5,7 +5,7 @@
     <UIAlertBox 
         Type="AlertType.Warning" 
         Title="Application Error" >
-       @(Error?.InnerException?.Message ?? Error?.Message)
+        <p>@(Error?.InnerException?.Message ?? Error?.Message)</p>
     </UIAlertBox>
 }
 
